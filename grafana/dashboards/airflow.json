@@ -1,23 +1,41 @@
 {
   "uid": "oruuvi-airflow",
   "title": "Oruuvi-Mokki: Airflow",
-  "tags": ["ruuvi", "airflow"],
+  "tags": [
+    "ruuvi",
+    "airflow"
+  ],
   "timezone": "browser",
   "schemaVersion": 39,
-  "version": 5,
+  "version": 6,
   "editable": true,
   "graphTooltip": 1,
   "refresh": "10s",
-  "time": {"from": "now-24h", "to": "now"},
-  "templating": {"list": []},
-  "annotations": {"list": []},
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
   "panels": [
     {
       "id": 1,
       "type": "timeseries",
-      "title": "Pressure rolling stddev — 15s, 3-min, 5-min overlay (no thresholds: pick what looks clearest)",
-      "datasource": {"type": "frser-sqlite-datasource", "uid": "oruuvi-sqlite"},
-      "gridPos": {"x": 0, "y": 0, "w": 24, "h": 10},
+      "title": "Pressure rolling stddev \u2014 15s, 3-min, 5-min overlay (no thresholds: pick what looks clearest)",
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "oruuvi-sqlite"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 10
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "pressurepa",
@@ -29,25 +47,84 @@
           }
         },
         "overrides": [
-          {"matcher": {"id": "byName", "options": "sd_15s_pa"},
-           "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#dc2626"}}, {"id": "custom.lineWidth", "value": 1}]},
-          {"matcher": {"id": "byName", "options": "sd_3min_pa"},
-           "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#1d4ed8"}}, {"id": "custom.lineWidth", "value": 1.5}]},
-          {"matcher": {"id": "byName", "options": "sd_5min_pa"},
-           "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#d97706"}}, {"id": "custom.lineWidth", "value": 2}]}
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sd_15s_pa"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#dc2626"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sd_3min_pa"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#1d4ed8"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1.5
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sd_5min_pa"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#d97706"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              }
+            ]
+          }
         ]
       },
       "options": {
-        "legend": {"displayMode": "list", "placement": "bottom"},
-        "tooltip": {"mode": "single"}
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
       "targets": [
         {
           "refId": "A",
-          "datasource": {"type": "frser-sqlite-datasource", "uid": "oruuvi-sqlite"},
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "oruuvi-sqlite"
+          },
           "queryType": "table",
-          "rawQueryText": "SELECT epoch_ms AS time, 100.0 * SQRT(MAX(0.0, AVG(pressure_hpa*pressure_hpa) OVER w15  - AVG(pressure_hpa) OVER w15  * AVG(pressure_hpa) OVER w15))  AS sd_15s_pa, 100.0 * SQRT(MAX(0.0, AVG(pressure_hpa*pressure_hpa) OVER w180 - AVG(pressure_hpa) OVER w180 * AVG(pressure_hpa) OVER w180)) AS sd_3min_pa, 100.0 * SQRT(MAX(0.0, AVG(pressure_hpa*pressure_hpa) OVER w300 - AVG(pressure_hpa) OVER w300 * AVG(pressure_hpa) OVER w300)) AS sd_5min_pa FROM readings WHERE epoch_ms >= $__timeFrom() - 300000 AND epoch_ms <= $__timeTo() WINDOW w15  AS (ORDER BY epoch_ms RANGE BETWEEN  15000 PRECEDING AND CURRENT ROW), w180 AS (ORDER BY epoch_ms RANGE BETWEEN 180000 PRECEDING AND CURRENT ROW), w300 AS (ORDER BY epoch_ms RANGE BETWEEN 300000 PRECEDING AND CURRENT ROW) ORDER BY time",
-          "queryText":    "SELECT epoch_ms AS time, 100.0 * SQRT(MAX(0.0, AVG(pressure_hpa*pressure_hpa) OVER w15  - AVG(pressure_hpa) OVER w15  * AVG(pressure_hpa) OVER w15))  AS sd_15s_pa, 100.0 * SQRT(MAX(0.0, AVG(pressure_hpa*pressure_hpa) OVER w180 - AVG(pressure_hpa) OVER w180 * AVG(pressure_hpa) OVER w180)) AS sd_3min_pa, 100.0 * SQRT(MAX(0.0, AVG(pressure_hpa*pressure_hpa) OVER w300 - AVG(pressure_hpa) OVER w300 * AVG(pressure_hpa) OVER w300)) AS sd_5min_pa FROM readings WHERE epoch_ms >= $__timeFrom() - 300000 AND epoch_ms <= $__timeTo() WINDOW w15  AS (ORDER BY epoch_ms RANGE BETWEEN  15000 PRECEDING AND CURRENT ROW), w180 AS (ORDER BY epoch_ms RANGE BETWEEN 180000 PRECEDING AND CURRENT ROW), w300 AS (ORDER BY epoch_ms RANGE BETWEEN 300000 PRECEDING AND CURRENT ROW) ORDER BY time"
+          "rawQueryText": "SELECT epoch_ms AS time, 100.0 * SQRT(MAX(0.0, AVG(pressure_hpa*pressure_hpa) OVER w15  - AVG(pressure_hpa) OVER w15  * AVG(pressure_hpa) OVER w15))  AS sd_15s_pa, 100.0 * SQRT(MAX(0.0, AVG(pressure_hpa*pressure_hpa) OVER w180 - AVG(pressure_hpa) OVER w180 * AVG(pressure_hpa) OVER w180)) AS sd_3min_pa, 100.0 * SQRT(MAX(0.0, AVG(pressure_hpa*pressure_hpa) OVER w300 - AVG(pressure_hpa) OVER w300 * AVG(pressure_hpa) OVER w300)) AS sd_5min_pa FROM readings WHERE epoch_ms >= $__timeFrom - 300000 AND epoch_ms <= $__timeTo WINDOW w15  AS (ORDER BY epoch_ms RANGE BETWEEN  15000 PRECEDING AND CURRENT ROW), w180 AS (ORDER BY epoch_ms RANGE BETWEEN 180000 PRECEDING AND CURRENT ROW), w300 AS (ORDER BY epoch_ms RANGE BETWEEN 300000 PRECEDING AND CURRENT ROW) ORDER BY time",
+          "queryText": "SELECT epoch_ms AS time, 100.0 * SQRT(MAX(0.0, AVG(pressure_hpa*pressure_hpa) OVER w15  - AVG(pressure_hpa) OVER w15  * AVG(pressure_hpa) OVER w15))  AS sd_15s_pa, 100.0 * SQRT(MAX(0.0, AVG(pressure_hpa*pressure_hpa) OVER w180 - AVG(pressure_hpa) OVER w180 * AVG(pressure_hpa) OVER w180)) AS sd_3min_pa, 100.0 * SQRT(MAX(0.0, AVG(pressure_hpa*pressure_hpa) OVER w300 - AVG(pressure_hpa) OVER w300 * AVG(pressure_hpa) OVER w300)) AS sd_5min_pa FROM readings WHERE epoch_ms >= $__timeFrom - 300000 AND epoch_ms <= $__timeTo WINDOW w15  AS (ORDER BY epoch_ms RANGE BETWEEN  15000 PRECEDING AND CURRENT ROW), w180 AS (ORDER BY epoch_ms RANGE BETWEEN 180000 PRECEDING AND CURRENT ROW), w300 AS (ORDER BY epoch_ms RANGE BETWEEN 300000 PRECEDING AND CURRENT ROW) ORDER BY time"
         }
       ]
     },
@@ -55,8 +132,16 @@
       "id": 2,
       "type": "timeseries",
       "title": "Raw pressure with 5-min trend overlay",
-      "datasource": {"type": "frser-sqlite-datasource", "uid": "oruuvi-sqlite"},
-      "gridPos": {"x": 0, "y": 10, "w": 24, "h": 8},
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "oruuvi-sqlite"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 10,
+        "w": 24,
+        "h": 8
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "pressurehpa",
@@ -68,23 +153,65 @@
           }
         },
         "overrides": [
-          {"matcher": {"id": "byName", "options": "raw_hpa"},
-           "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#2bb09f"}}, {"id": "custom.lineWidth", "value": 1}]},
-          {"matcher": {"id": "byName", "options": "trend_5min_hpa"},
-           "properties": [{"id": "color", "value": {"mode": "fixed", "fixedColor": "#d97706"}}, {"id": "custom.lineWidth", "value": 2}]}
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "raw_hpa"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2bb09f"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "trend_5min_hpa"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#d97706"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              }
+            ]
+          }
         ]
       },
       "options": {
-        "legend": {"displayMode": "list", "placement": "bottom"},
-        "tooltip": {"mode": "single"}
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
       "targets": [
         {
           "refId": "A",
-          "datasource": {"type": "frser-sqlite-datasource", "uid": "oruuvi-sqlite"},
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "oruuvi-sqlite"
+          },
           "queryType": "table",
-          "rawQueryText": "SELECT epoch_ms AS time, pressure_hpa AS raw_hpa, AVG(pressure_hpa) OVER (ORDER BY epoch_ms RANGE BETWEEN 300000 PRECEDING AND CURRENT ROW) AS trend_5min_hpa FROM readings WHERE epoch_ms >= $__timeFrom() - 300000 AND epoch_ms <= $__timeTo() ORDER BY time",
-          "queryText":    "SELECT epoch_ms AS time, pressure_hpa AS raw_hpa, AVG(pressure_hpa) OVER (ORDER BY epoch_ms RANGE BETWEEN 300000 PRECEDING AND CURRENT ROW) AS trend_5min_hpa FROM readings WHERE epoch_ms >= $__timeFrom() - 300000 AND epoch_ms <= $__timeTo() ORDER BY time"
+          "rawQueryText": "SELECT epoch_ms AS time, pressure_hpa AS raw_hpa, AVG(pressure_hpa) OVER (ORDER BY epoch_ms RANGE BETWEEN 300000 PRECEDING AND CURRENT ROW) AS trend_5min_hpa FROM readings WHERE epoch_ms >= $__timeFrom - 300000 AND epoch_ms <= $__timeTo ORDER BY time",
+          "queryText": "SELECT epoch_ms AS time, pressure_hpa AS raw_hpa, AVG(pressure_hpa) OVER (ORDER BY epoch_ms RANGE BETWEEN 300000 PRECEDING AND CURRENT ROW) AS trend_5min_hpa FROM readings WHERE epoch_ms >= $__timeFrom - 300000 AND epoch_ms <= $__timeTo ORDER BY time"
         }
       ]
     },
@@ -92,8 +219,16 @@
       "id": 3,
       "type": "timeseries",
       "title": "Temperature & humidity",
-      "datasource": {"type": "frser-sqlite-datasource", "uid": "oruuvi-sqlite"},
-      "gridPos": {"x": 0, "y": 18, "w": 24, "h": 6},
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "oruuvi-sqlite"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 18,
+        "w": 24,
+        "h": 6
+      },
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -103,23 +238,69 @@
           }
         },
         "overrides": [
-          {"matcher": {"id": "byName", "options": "temperature_c"},
-           "properties": [{"id": "unit", "value": "celsius"}, {"id": "color", "value": {"mode": "fixed", "fixedColor": "orange"}}]},
-          {"matcher": {"id": "byName", "options": "humidity_pct"},
-           "properties": [{"id": "unit", "value": "percent"}, {"id": "color", "value": {"mode": "fixed", "fixedColor": "blue"}}, {"id": "custom.axisPlacement", "value": "right"}]}
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature_c"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "orange"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "humidity_pct"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          }
         ]
       },
       "options": {
-        "legend": {"displayMode": "list", "placement": "bottom"},
-        "tooltip": {"mode": "single"}
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
       "targets": [
         {
           "refId": "A",
-          "datasource": {"type": "frser-sqlite-datasource", "uid": "oruuvi-sqlite"},
+          "datasource": {
+            "type": "frser-sqlite-datasource",
+            "uid": "oruuvi-sqlite"
+          },
           "queryType": "table",
-          "rawQueryText": "SELECT epoch_ms AS time, temperature_c, humidity_pct FROM readings WHERE epoch_ms >= $__timeFrom() AND epoch_ms <= $__timeTo() ORDER BY time",
-          "queryText":    "SELECT epoch_ms AS time, temperature_c, humidity_pct FROM readings WHERE epoch_ms >= $__timeFrom() AND epoch_ms <= $__timeTo() ORDER BY time"
+          "rawQueryText": "SELECT epoch_ms AS time, temperature_c, humidity_pct FROM readings WHERE epoch_ms >= $__timeFrom AND epoch_ms <= $__timeTo ORDER BY time",
+          "queryText": "SELECT epoch_ms AS time, temperature_c, humidity_pct FROM readings WHERE epoch_ms >= $__timeFrom AND epoch_ms <= $__timeTo ORDER BY time"
         }
       ]
     }

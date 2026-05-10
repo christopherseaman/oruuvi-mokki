@@ -1,0 +1,17 @@
+[Unit]
+Description=Oruuvi-Mokki: Ruuvi BLE advertisement logger
+After=bluetooth.target network.target
+Wants=bluetooth.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/projects/oruuvi-mokki
+ExecStart=%h/projects/oruuvi-mokki/logger.py
+Environment=ORUUVI_DB=%h/projects/oruuvi-mokki/data/ruuvi.db
+Restart=on-failure
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

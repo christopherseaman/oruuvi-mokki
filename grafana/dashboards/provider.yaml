@@ -1,0 +1,10 @@
+apiVersion: 1
+providers:
+  - name: oruuvi-mokki
+    folder: Oruuvi-Mokki
+    type: file
+    allowUiUpdates: true
+    updateIntervalSeconds: 30
+    options:
+      path: /var/lib/oruuvi-mokki/grafana/dashboards
+      foldersFromFilesStructure: false
